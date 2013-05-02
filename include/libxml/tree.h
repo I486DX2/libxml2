@@ -1383,7 +1383,7 @@ XMLPUBFUN xmlDocPtr XMLCALL
     xmlNewDoc (const xmlChar *version);
 
 XMLPUBFUN void XMLCALL
-    xmlFreeDoc (xmlDocPtr cur);
+    xmlFreeDoc (xmlDocPtr doc);
 
 XMLPUBFUN xmlNodePtr XMLCALL
     xmlDocGetRootElement (xmlDocPtr doc);
@@ -1464,8 +1464,8 @@ XMLPUBFUN long XMLCALL
 #define xmlRootNode children
 #endif
 
-XMLPUBFUN xmlNodePtr XMLCALL
-    xmlGetLastChild (xmlNodePtr node);
+/*XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetLastChild (xmlNodePtr node);*/
 
 /* ========================================================================= */
 /* ========================================================================= */
