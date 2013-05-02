@@ -146,7 +146,26 @@ XMLPUBFUN size_t XMLCALL         xmlBufShrink	(xmlBufPtr buf, size_t len);
  */
 #define XML_XML_ID (const xmlChar *) "xml:id"
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /*
+ * xmlElementType:
+ * @XML_ELEMENT_NODE: an element (commonly called a tag, eg. <hello></hello>)
+ * @XML_ATTRIBUTE_NODE: an attribute of an element (eg. <a href="http://url">)
+ * @XML_TEXT_NODE: a text node (for example, <p>this is a paragraph</p>
+ *                 will result in an #XML_ELEMENT_NODE with the tag "p" and
+ *                 an #XML_TEXT_NODE with content "this is a paragraph")
+ * @XML_CDATA_SECTION_NODE: a CDATA section node (eg. <![CDATA[ the cdata ]]>)
+ * @XML_ENTITY_REF_NODE: an entity reference (eg. &amp;)
+ * @XML_ENTITY_NODE: an entity
+ * @XML_PI_NODE: a processing instruction node (eg. <?php phpinfo(); ?>)
+ * @XML_COMMENT_NODE: a comment (eg. <!-- comment -->)
+ * @XML_DOCUMENT_NODE: a document (the root of the XML tree)
+ *
  * The different element types carried by an XML tree.
  *
  * NOTE: This is synchronized with DOM Level1 values
@@ -156,30 +175,36 @@ XMLPUBFUN size_t XMLCALL         xmlBufShrink	(xmlBufPtr buf, size_t len);
  * be deprecated to use an XML_DTD_NODE.
  */
 typedef enum {
-    XML_ELEMENT_NODE=		1,
-    XML_ATTRIBUTE_NODE=		2,
-    XML_TEXT_NODE=		3,
-    XML_CDATA_SECTION_NODE=	4,
-    XML_ENTITY_REF_NODE=	5,
-    XML_ENTITY_NODE=		6,
-    XML_PI_NODE=		7,
-    XML_COMMENT_NODE=		8,
-    XML_DOCUMENT_NODE=		9,
-    XML_DOCUMENT_TYPE_NODE=	10,
-    XML_DOCUMENT_FRAG_NODE=	11,
-    XML_NOTATION_NODE=		12,
-    XML_HTML_DOCUMENT_NODE=	13,
-    XML_DTD_NODE=		14,
-    XML_ELEMENT_DECL=		15,
-    XML_ATTRIBUTE_DECL=		16,
-    XML_ENTITY_DECL=		17,
-    XML_NAMESPACE_DECL=		18,
-    XML_XINCLUDE_START=		19,
-    XML_XINCLUDE_END=		20
+    XML_ELEMENT_NODE        = 1,
+    XML_ATTRIBUTE_NODE      = 2,
+    XML_TEXT_NODE           = 3,
+    XML_CDATA_SECTION_NODE  = 4,
+    XML_ENTITY_REF_NODE     = 5,
+    XML_ENTITY_NODE         = 6,
+    XML_PI_NODE             = 7,
+    XML_COMMENT_NODE        = 8,
+    XML_DOCUMENT_NODE       = 9,
+    XML_DOCUMENT_TYPE_NODE  = 10,
+    XML_DOCUMENT_FRAG_NODE  = 11,
+    XML_NOTATION_NODE       = 12,
+    XML_HTML_DOCUMENT_NODE  = 13,
+    XML_DTD_NODE            = 14,
+    XML_ELEMENT_DECL        = 15,
+    XML_ATTRIBUTE_DECL      = 16,
+    XML_ENTITY_DECL         = 17,
+    XML_NAMESPACE_DECL      = 18,
+    XML_XINCLUDE_START      = 19,
+    XML_XINCLUDE_END        = 20
 #ifdef LIBXML_DOCB_ENABLED
-   ,XML_DOCB_DOCUMENT_NODE=	21
+   ,XML_DOCB_DOCUMENT_NODE  = 21
 #endif
 } xmlElementType;
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                          */
+/* ========================================================================= */
+/* ========================================================================= */
 
 
 /**
@@ -478,49 +503,72 @@ struct _xmlRef {
     int               lineno;	/* The line number if attr is not available */
 };
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlNode:
  *
  * A node in an XML tree.
+ *
+ * The members of this structure should not be accessed directly. Use the
+ * accessor functions like xmlGetFirstChild(), xmlGetLineNo() and
+ * xmlGetPrivate() instead.
+ *
+ * Not all pointers to #xmlNode actually point to an #xmlNode structure.
+ * #xmlNode has the same first 9 fields as #xmlDoc, #xmlAttr and several other 
+ * structures pointers to which which are often cast into #xmlNodePtr. 
+ *
+ * It means that you can't access the fields of an #xmlNode after the common 
+ * part without checking if the #xmlNodePtr actually points to an #xmlNode. 
+ * This is not a problem if you use the accessor functions instead of accessing 
+ * these fields, as the functions do this for you. You can also check it
+ * yourself with the xmlNodePtrPointsToNode() function (although you won't
+ * normally need that, since accessor functions are preferred to the direct
+ * field access).
+ *
+ * See #xmlDocPtr and #xmlAttrPtr 
+ * to learn how to safely cast them to an #xmlNodePtr and back.
  */
 typedef struct _xmlNode xmlNode;
-typedef xmlNode *xmlNodePtr;
 struct _xmlNode {
-    void           *_private;	/* application data */
-    xmlElementType   type;	/* type number, must be second ! */
+    void            *_private;  /* application data */
+    xmlElementType   type;      /* type number, must be second ! */
     const xmlChar   *name;      /* the name of the node, or the entity */
-    struct _xmlNode *children;	/* parent->childs link */
-    struct _xmlNode *last;	/* last child link */
-    struct _xmlNode *parent;	/* child->parent link */
-    struct _xmlNode *next;	/* next sibling link  */
-    struct _xmlNode *prev;	/* previous sibling link  */
-    struct _xmlDoc  *doc;	/* the containing document */
+    struct _xmlNode *children;  /* parent->childs link */
+    struct _xmlNode *last;      /* last child link */
+    struct _xmlNode *parent;    /* child->parent link */
+    struct _xmlNode *next;      /* next sibling link  */
+    struct _xmlNode *prev;      /* previous sibling link  */
+    struct _xmlDoc  *doc;       /* the containing document, end of common part */
 
-    /* End of common part */
     xmlNs           *ns;        /* pointer to the associated namespace */
     xmlChar         *content;   /* the content */
     struct _xmlAttr *properties;/* properties list */
     xmlNs           *nsDef;     /* namespace definitions on this node */
-    void            *psvi;	/* for type/PSVI informations */
-    unsigned short   line;	/* line number */
-    unsigned short   extra;	/* extra data for XPath/XSLT */
+    void            *psvi;      /* for type/PSVI informations */
+    unsigned short   line;      /* line number */
+    unsigned short   extra;	    /* extra data for XPath/XSLT */
 };
 
 /**
- * XML_GET_CONTENT:
+ * xmlNodePtr:
  *
- * Macro to extract the content pointer of a node.
+ * A pointer to an XML node.
+ *
+ * Not all #xmlNodePtr actually point to an #xmlNode. See #xmlNode for more
+ * information.
  */
-#define XML_GET_CONTENT(n)					\
-    ((n)->type == XML_ELEMENT_NODE ? NULL : (n)->content)
+typedef xmlNode *xmlNodePtr;
 
-/**
- * XML_GET_LINE:
- *
- * Macro to extract the line number of an element node.
- */
-#define XML_GET_LINE(n)						\
-    (xmlGetLineNo(n))
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                          */
+/* ========================================================================= */
+/* ========================================================================= */
 
 /**
  * xmlDocProperty
@@ -540,25 +588,32 @@ typedef enum {
     XML_DOC_HTML		= 1<<7  /* parsed or built HTML document */
 } xmlDocProperties;
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                              */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlDoc:
  *
  * An XML document.
+ *
+ * The members of this structure should not be accessed directly. Use the
+ * accessor functions like xmlDocGetRootElement() instead.
  */
 typedef struct _xmlDoc xmlDoc;
-typedef xmlDoc *xmlDocPtr;
 struct _xmlDoc {
-    void           *_private;	/* application data */
+    void           *_private;   /* application data */
     xmlElementType  type;       /* XML_DOCUMENT_NODE, must be second ! */
-    char           *name;	/* name/filename/URI of the document */
-    struct _xmlNode *children;	/* the document tree */
-    struct _xmlNode *last;	/* last child link */
-    struct _xmlNode *parent;	/* child->parent link */
-    struct _xmlNode *next;	/* next sibling link  */
-    struct _xmlNode *prev;	/* previous sibling link  */
-    struct _xmlDoc  *doc;	/* autoreference to itself */
+    char           *name;       /* name/filename/URI of the document */
+    struct _xmlNode *children;  /* the document tree */
+    struct _xmlNode *last;      /* last child link */
+    struct _xmlNode *parent;    /* child->parent link */
+    struct _xmlNode *next;      /* next sibling link  */
+    struct _xmlNode *prev;      /* previous sibling link  */
+    struct _xmlDoc  *doc;       /* autoreference to itself, end of common part */
 
-    /* End of common part */
     int             compression;/* level of zlib compression */
     int             standalone; /* standalone document (no external refs)
 				     1 if standalone="yes"
@@ -584,6 +639,19 @@ struct _xmlDoc {
 				   set at the end of parsing */
 };
 
+/**
+ * xmlDocPtr:
+ *
+ * A pointer to an #xmlDoc. You can convert it to #xmlNodePtr with 
+ * xmlDocToNode() and back with xmlNodeToDoc().
+ */
+typedef xmlDoc *xmlDocPtr;
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
 
 typedef struct _xmlDOMWrapCtxt xmlDOMWrapCtxt;
 typedef xmlDOMWrapCtxt *xmlDOMWrapCtxtPtr;
@@ -626,26 +694,6 @@ struct _xmlDOMWrapCtxt {
     */
     xmlDOMWrapAcquireNsFunction getNsForNodeFunc;
 };
-
-/**
- * xmlChildrenNode:
- *
- * Macro for compatibility naming layer with libxml1. Maps
- * to "children."
- */
-#ifndef xmlChildrenNode
-#define xmlChildrenNode children
-#endif
-
-/**
- * xmlRootNode:
- *
- * Macro for compatibility naming layer with libxml1. Maps
- * to "children".
- */
-#ifndef xmlRootNode
-#define xmlRootNode children
-#endif
 
 /*
  * Variables.
@@ -771,10 +819,7 @@ XMLPUBFUN void XMLCALL
 		xmlFreeNs		(xmlNsPtr cur);
 XMLPUBFUN void XMLCALL
 		xmlFreeNsList		(xmlNsPtr cur);
-XMLPUBFUN xmlDocPtr XMLCALL
-		xmlNewDoc		(const xmlChar *version);
-XMLPUBFUN void XMLCALL
-		xmlFreeDoc		(xmlDocPtr cur);
+
 XMLPUBFUN xmlAttrPtr XMLCALL
 		xmlNewDocProp		(xmlDocPtr doc,
 					 const xmlChar *name,
@@ -905,16 +950,13 @@ XMLPUBFUN xmlNodePtr XMLCALL
 /*
  * Navigating.
  */
-XMLPUBFUN long XMLCALL
-		xmlGetLineNo		(xmlNodePtr node);
+
 #if defined(LIBXML_TREE_ENABLED) || defined(LIBXML_DEBUG_ENABLED)
 XMLPUBFUN xmlChar * XMLCALL
 		xmlGetNodePath		(xmlNodePtr node);
 #endif /* defined(LIBXML_TREE_ENABLED) || defined(LIBXML_DEBUG_ENABLED) */
-XMLPUBFUN xmlNodePtr XMLCALL
-		xmlDocGetRootElement	(xmlDocPtr doc);
-XMLPUBFUN xmlNodePtr XMLCALL
-		xmlGetLastChild		(xmlNodePtr parent);
+
+
 XMLPUBFUN int XMLCALL
 		xmlNodeIsText		(xmlNodePtr node);
 XMLPUBFUN int XMLCALL
@@ -1048,9 +1090,7 @@ XMLPUBFUN xmlChar * XMLCALL
 					 xmlNodePtr list,
 					 int inLine);
 #endif /* LIBXML_TREE_ENABLED */
-XMLPUBFUN void XMLCALL
-		xmlNodeSetContent	(xmlNodePtr cur,
-					 const xmlChar *content);
+
 #ifdef LIBXML_TREE_ENABLED
 XMLPUBFUN void XMLCALL
 		xmlNodeSetContentLen	(xmlNodePtr cur,
@@ -1064,8 +1104,6 @@ XMLPUBFUN void XMLCALL
 		xmlNodeAddContentLen	(xmlNodePtr cur,
 					 const xmlChar *content,
 					 int len);
-XMLPUBFUN xmlChar * XMLCALL
-		xmlNodeGetContent	(xmlNodePtr cur);
 
 XMLPUBFUN int XMLCALL
 		xmlNodeBufGetContent	(xmlBufferPtr buffer,
@@ -1292,6 +1330,149 @@ XMLPUBFUN xmlNodePtr XMLCALL
 XMLPUBFUN xmlNodePtr XMLCALL
             xmlPreviousElementSibling   (xmlNodePtr node);
 #endif
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+/*  Casting                                                                  */
+/* ------------------------------------------------------------------------- */
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlDocToNode (xmlDocPtr attr);
+
+XMLPUBFUN xmlDocPtr XMLCALL
+    xmlNodeToDoc (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlAttrToNode (xmlAttrPtr attr);
+
+XMLPUBFUN xmlAttrPtr XMLCALL
+    xmlNodeToAttr (xmlNodePtr node);
+
+/* ------------------------------------------------------------------------- */
+/*  Traversal                                                                */
+/* ------------------------------------------------------------------------- */
+
+XMLPUBFUN xmlDocPtr XMLCALL
+    xmlGetOwnerDoc (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetParentNode (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetPreviousSibling (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetNextSibling (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetFirstChild (xmlNodePtr node);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetLastChild (xmlNodePtr node);
+
+/* ------------------------------------------------------------------------- */
+/*  Document                                                                 */
+/* ------------------------------------------------------------------------- */
+
+XMLPUBFUN xmlDocPtr XMLCALL
+    xmlNewDoc (const xmlChar *version);
+
+XMLPUBFUN void XMLCALL
+    xmlFreeDoc (xmlDocPtr cur);
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlDocGetRootElement (xmlDocPtr doc);
+
+/* ------------------------------------------------------------------------- */
+/*  Node general                                                             */
+/* ------------------------------------------------------------------------- */
+
+XMLPUBFUN void * XMLCALL
+    xmlGetNodeUserData (xmlNodePtr node);
+
+XMLPUBFUN void * XMLCALL
+    xmlSetNodeUserData (xmlNodePtr node, void *userData);
+
+XMLPUBFUN xmlElementType XMLCALL
+    xmlGetNodeType (xmlNodePtr node);
+
+XMLPUBFUN xmlChar * XMLCALL
+    xmlNodeGetContent (xmlNodePtr node);
+
+XMLPUBFUN void XMLCALL
+    xmlNodeSetContent (xmlNodePtr cur, const xmlChar *content);
+
+XMLPUBFUN long XMLCALL
+    xmlGetLineNo (xmlNodePtr node);
+
+/* ------------------------------------------------------------------------- */
+/*  Element attributes                                                       */
+/* ------------------------------------------------------------------------- */
+
+/* ------------------------------------------------------------------------- */
+/*  Deprecated stuff                                                         */
+/* ------------------------------------------------------------------------- */
+
+/**
+ * XML_GET_CONTENT:
+ * @n: an #xmlNodePtr
+ *
+ * Macro to extract the content pointer of a node.
+ *
+ * Deprecated! Use xmlGetNodeContent() or xmlGetNodeDirectContent() instead.
+ */
+#define XML_GET_CONTENT(n) \
+    ((n)->type == XML_ELEMENT_NODE ? NULL : (n)->content)
+
+/**
+ * XML_GET_LINE:
+ * @n: an #xmlNodePtr
+ *
+ * Macro to extract the line number of an element node.
+ *
+ * Deprecated! Use xmlGetLineNo() instead.
+ */
+#define XML_GET_LINE(n) \
+    (xmlGetLineNo(n))
+
+/**
+ * xmlChildrenNode:
+ *
+ * Macro for compatibility naming layer with libxml1. Maps
+ * to "children."
+ *
+ * Deprecated! Use xmlGetFirstChild() instead.
+ */
+#ifndef xmlChildrenNode
+#define xmlChildrenNode children
+#endif
+
+/**
+ * xmlRootNode:
+ *
+ * Macro for compatibility naming layer with libxml1. Maps
+ * to "children".
+ *
+ * Deprecated! Use xmlDocGetRootElement() instead.
+ */
+#ifndef xmlRootNode
+#define xmlRootNode children
+#endif
+
+XMLPUBFUN xmlNodePtr XMLCALL
+    xmlGetLastChild (xmlNodePtr node);
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
+
 #ifdef __cplusplus
 }
 #endif
