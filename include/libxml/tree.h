@@ -542,7 +542,8 @@ struct _xmlRef {
  *
  * Not all pointers to #xmlNode actually point to an #xmlNode structure.
  * #xmlNode has the same first 9 fields as #xmlDoc, #xmlAttr and several other 
- * structures pointers to which which are often cast into #xmlNodePtr. 
+ * structures pointers to which which are often cast into #xmlNodePtr. #xmlNs,
+ * which has only one common field with it, is also cast into #xmlNodePtr.
  *
  * It means that you can't access the fields of an #xmlNode after the common 
  * part without checking if the #xmlNodePtr actually points to an #xmlNode. 
@@ -1422,6 +1423,9 @@ XMLPUBFUN void * XMLCALL
 
 XMLPUBFUN xmlElementType XMLCALL
     xmlGetNodeType (xmlNodePtr node);
+
+XMLPUBFUN const xmlChar * XMLCALL
+    xmlNodeGetDirectContent (xmlNodePtr node);
 
 XMLPUBFUN xmlChar * XMLCALL
     xmlNodeGetContent (xmlNodePtr node);

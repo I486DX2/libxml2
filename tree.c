@@ -9827,6 +9827,9 @@ xmlGetOwnerDoc (xmlNodePtr node)
     if (node == NULL)
         return NULL;
 
+    if (node->type == XML_NAMESPACE_DECL)
+        return ((xmlNsPtr)node)->context;
+
     return node->doc;
 }
 
@@ -9842,7 +9845,7 @@ xmlGetOwnerDoc (xmlNodePtr node)
 xmlNodePtr
 xmlGetParentNode (xmlNodePtr node)
 {
-    if (node == NULL)
+    if (node == NULL || node->type == XML_NAMESPACE_DECL)
         return NULL;
 
     return node->parent;
@@ -9860,7 +9863,7 @@ xmlGetParentNode (xmlNodePtr node)
 xmlNodePtr
 xmlGetPreviousSibling (xmlNodePtr node)
 {
-    if (node == NULL)
+    if (node == NULL || node->type == XML_NAMESPACE_DECL)
         return NULL;
 
     return node->prev;
@@ -9878,7 +9881,7 @@ xmlGetPreviousSibling (xmlNodePtr node)
 xmlNodePtr
 xmlGetNextSibling (xmlNodePtr node)
 {
-    if (node == NULL)
+    if (node == NULL || node->type == XML_NAMESPACE_DECL)
         return NULL;
 
     return node->next;
@@ -9896,7 +9899,7 @@ xmlGetNextSibling (xmlNodePtr node)
 xmlNodePtr
 xmlGetFirstChild (xmlNodePtr node)
 {
-    if (node == NULL)
+    if (node == NULL || node->type == XML_NAMESPACE_DECL)
         return NULL;
 
     return node->children;
@@ -9914,7 +9917,7 @@ xmlGetFirstChild (xmlNodePtr node)
 xmlNodePtr
 xmlGetLastChild(xmlNodePtr node)
 {
-    if (node == NULL)
+    if (node == NULL || node->type == XML_NAMESPACE_DECL)
         return NULL;
 
     return node->last;
@@ -9981,7 +9984,7 @@ xmlNewDoc(const xmlChar *version) {
  * Free up all the structures used by a document, tree included.
  */
 void
-xmlFreeDoc(xmlDocPtr doc) {
+xmlFreeDoc(xmlDocPtr cur) {
     xmlDtdPtr extSubset, intSubset;
     xmlDictPtr dict = NULL;
 
@@ -10080,6 +10083,9 @@ xmlGetNodeUserData (xmlNodePtr node);
     if (node == NULL)
         return NULL;
 
+    if (node->type == XML_NAMESPACE_DECL)
+        return ((xmlNsPtr)node)->_private;
+
     return node->_private;
 }
 
@@ -10100,7 +10106,10 @@ xmlSetNodeUserData (xmlNodePtr node, void *userData)
     if (node == NULL)
         return;
 
-    node->_private = userData;
+    if (node->type == XML_NAMESPACE_DECL)
+        ((xmlNsPtr)node)->_private = userData;
+    else
+        node->_private = userData;
 }
 
 /**
@@ -10130,7 +10139,7 @@ xmlGetNodeType (xmlNodePtr node)
  *          It's up to the caller to free the string after use with xmlFree().
  */
 xmlChar *
-xmlNodeGetContent(xmlNodePtr node)
+xmlNodeGetContent(xmlNodePtr cur)
 {
     if (cur == NULL)
         return (NULL);
@@ -10235,7 +10244,7 @@ xmlNodeGetContent(xmlNodePtr node)
  *       xmlEncodeEntitiesReentrant() resp. xmlEncodeSpecialChars().
  */
 void
-xmlNodeSetContent(xmlNodePtr node, const xmlChar *content) {
+xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
     if (cur == NULL) {
 #ifdef DEBUG_TREE
         xmlGenericError(xmlGenericErrorContext,
@@ -10326,7 +10335,7 @@ xmlGetLineNo(xmlNodePtr node)
  *
  * Returns: Last child of the node or NULL if the node does not have any
  *          children
-
+ 
 xmlNodePtr
 xmlGetLastChild (xmlNodePtr node)
 {
