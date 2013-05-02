@@ -202,7 +202,7 @@ typedef enum {
 
 /* ========================================================================= */
 /* ========================================================================= */
-/*  END SANITY ISLAND                                                          */
+/*  END SANITY ISLAND                                                        */
 /* ========================================================================= */
 /* ========================================================================= */
 
@@ -389,6 +389,18 @@ struct _xmlElement {
 #endif
 };
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
+/**
+ * xmlNsType:
+ *
+ * XML namespace type, unified with #xmlElementType.
+ */
+typedef xmlElementType xmlNsType;
 
 /**
  * XML_LOCAL_NAMESPACE:
@@ -396,28 +408,44 @@ struct _xmlElement {
  * A namespace declaration node.
  */
 #define XML_LOCAL_NAMESPACE XML_NAMESPACE_DECL
-typedef xmlElementType xmlNsType;
+
 
 /**
  * xmlNs:
  *
  * An XML namespace.
+ *
  * Note that prefix == NULL is valid, it defines the default namespace
  * within the subtree (until overridden).
  *
  * xmlNsType is unified with xmlElementType.
+ *
+ * The members of this structure should not be accessed directly. Use the
+ * accessor functions like TODOFIXME instead.
  */
-
 typedef struct _xmlNs xmlNs;
-typedef xmlNs *xmlNsPtr;
 struct _xmlNs {
-    struct _xmlNs  *next;	/* next Ns link for this node  */
-    xmlNsType      type;	/* global or local */
-    const xmlChar *href;	/* URL for the namespace */
-    const xmlChar *prefix;	/* prefix for the namespace */
+    struct _xmlNs  *next;       /* next Ns link for this node  */
+    xmlNsType      type;        /* global or local */
+    const xmlChar  *href;       /* URL for the namespace */
+    const xmlChar  *prefix;     /* prefix for the namespace */
     void           *_private;   /* application data */
-    struct _xmlDoc *context;		/* normally an xmlDoc */
+    struct _xmlDoc *context;    /* normally an xmlDoc */
 };
+
+/**
+ * xmlNsPtr:
+ *
+ * A pointer to an #xmlNs. You can convert it to #xmlNodePtr with 
+ * xmlCastNsToNode() and back with xmlCastNodeToNs().
+ */
+typedef xmlNs *xmlNsPtr;
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
 
 /**
  * xmlDtd:
@@ -460,7 +488,7 @@ struct _xmlDtd {
  * An attribute on an XML node.
  *
  * The members of this structure should not be accessed directly. Use the
- * accessor functions instead.
+ * accessor functions like TODOFIXME instead.
  */
 typedef struct _xmlAttr xmlAttr;
 struct _xmlAttr {

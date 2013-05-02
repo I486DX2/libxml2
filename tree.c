@@ -10049,17 +10049,23 @@ xmlFreeDoc(xmlDocPtr cur) {
  * Returns: the root element of the document or NULL if @doc is NULL
  */
 xmlNodePtr
-xmlDocGetRootElement(xmlDocPtr doc) {
+xmlDocGetRootElement(xmlDocPtr doc)
+{
     xmlNodePtr ret;
 
-    if (doc == NULL) return(NULL);
+    if (doc == NULL) 
+        return NULL;
+
     ret = doc->children;
+    
     while (ret != NULL) {
-	if (ret->type == XML_ELEMENT_NODE)
-	    return(ret);
+        if (ret->type == XML_ELEMENT_NODE)
+            return ret;
+
         ret = ret->next;
     }
-    return(ret);
+
+    return ret;
 }
 
 /* ------------------------------------------------------------------------- */
@@ -10118,11 +10124,14 @@ xmlSetNodeUserData (xmlNodePtr node, void *userData)
  *
  * Gets the type of the node.
  *
- * Returns: The type of the node
+ * Returns: The type of the node or #XML_ELEMENT_NODE if @node is NULL.
  */
 xmlElementType
 xmlGetNodeType (xmlNodePtr node)
 {
+    if (node == NULL)
+        return XML_ELEMENT_NODE;
+
     return node->type;
 }
 
@@ -10135,8 +10144,9 @@ xmlGetNodeType (xmlNodePtr node)
  * of the values carried by this node child's (TEXT and ENTITY_REF).
  * Entity references are substituted.
  * 
- * Returns: A new #xmlChar * string or NULL if no content is available.
- *          It's up to the caller to free the string after use with xmlFree().
+ * Returns: A new #xmlChar * string or NULL if no content is available or, @node
+ *          is NULL. It's up to the caller to free the string after use with 
+ *          xmlFree(). TODOFIXME: is NULL returned on error also?
  */
 xmlChar *
 xmlNodeGetContent(xmlNodePtr cur)
