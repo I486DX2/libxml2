@@ -448,27 +448,49 @@ struct _xmlDtd {
     void          *pentities;   /* Hash table for param entities if any */
 };
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlAttr:
  *
  * An attribute on an XML node.
+ *
+ * The members of this structure should not be accessed directly. Use the
+ * accessor functions instead.
  */
 typedef struct _xmlAttr xmlAttr;
-typedef xmlAttr *xmlAttrPtr;
 struct _xmlAttr {
-    void           *_private;	/* application data */
+    void            *_private;  /* application data */
     xmlElementType   type;      /* XML_ATTRIBUTE_NODE, must be second ! */
     const xmlChar   *name;      /* the name of the property */
-    struct _xmlNode *children;	/* the value of the property */
-    struct _xmlNode *last;	/* NULL */
-    struct _xmlNode *parent;	/* child->parent link */
-    struct _xmlAttr *next;	/* next sibling link  */
-    struct _xmlAttr *prev;	/* previous sibling link  */
-    struct _xmlDoc  *doc;	/* the containing document */
+    struct _xmlNode *children;  /* the value of the property */
+    struct _xmlNode *last;      /* NULL */
+    struct _xmlNode *parent;    /* child->parent link */
+    struct _xmlAttr *next;      /* next sibling link  */
+    struct _xmlAttr *prev;      /* previous sibling link  */
+    struct _xmlDoc  *doc;       /* the containing document */
     xmlNs           *ns;        /* pointer to the associated namespace */
     xmlAttributeType atype;     /* the attribute type if validating */
-    void            *psvi;	/* for type/PSVI informations */
+    void            *psvi;      /* for type/PSVI informations */
 };
+
+/**
+ * xmlAttrPtr:
+ *
+ * A pointer to an #xmlAttr. You can convert it to #xmlNodePtr with 
+ * xmlCastAttrToNode() and back with xmlCastNodeToAttr().
+ */
+typedef xmlAttr *xmlAttrPtr;
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
 
 /**
  * xmlID:
@@ -590,7 +612,7 @@ typedef enum {
 
 /* ========================================================================= */
 /* ========================================================================= */
-/*  SANITY ISLAND                                                              */
+/*  SANITY ISLAND                                                            */
 /* ========================================================================= */
 /* ========================================================================= */
 
@@ -643,7 +665,7 @@ struct _xmlDoc {
  * xmlDocPtr:
  *
  * A pointer to an #xmlDoc. You can convert it to #xmlNodePtr with 
- * xmlDocToNode() and back with xmlNodeToDoc().
+ * xmlCastDocToNode() and back with xmlCastNodeToDoc().
  */
 typedef xmlDoc *xmlDocPtr;
 
@@ -1342,16 +1364,16 @@ XMLPUBFUN xmlNodePtr XMLCALL
 /* ------------------------------------------------------------------------- */
 
 XMLPUBFUN xmlNodePtr XMLCALL
-    xmlDocToNode (xmlDocPtr attr);
+    xmlCastDocToNode (xmlDocPtr attr);
 
 XMLPUBFUN xmlDocPtr XMLCALL
-    xmlNodeToDoc (xmlNodePtr node);
+    xmlCastNodeToDoc (xmlNodePtr node);
 
 XMLPUBFUN xmlNodePtr XMLCALL
-    xmlAttrToNode (xmlAttrPtr attr);
+    xmlCastAttrToNode (xmlAttrPtr attr);
 
 XMLPUBFUN xmlAttrPtr XMLCALL
-    xmlNodeToAttr (xmlNodePtr node);
+    xmlCastNodeToAttr (xmlNodePtr node);
 
 /* ------------------------------------------------------------------------- */
 /*  Traversal                                                                */

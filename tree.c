@@ -9740,7 +9740,7 @@ xmlDOMWrapAdoptNode(xmlDOMWrapCtxtPtr ctxt,
 /* ------------------------------------------------------------------------- */
 
 /**
- * xmlDocToNode:
+ * xmlCastDocToNode:
  * @doc: an #xmlDocPtr
  *
  * Cast an #xmlDocPtr to an #xmlNodePtr. The resulting node will have
@@ -9749,13 +9749,13 @@ xmlDOMWrapAdoptNode(xmlDOMWrapCtxtPtr ctxt,
  * Returns: An #xmlNodePtr or NULL if @doc is NULL
  */
 xmlNodePtr
-xmlDocToNode (xmlDocPtr doc)
+xmlCastDocToNode (xmlDocPtr doc)
 {
     return (xmlNodePtr)doc;
 }
 
 /**
- * xmlNodeToDoc:
+ * xmlCastNodeToDoc:
  * @node: an #xmlNodePtr
  *
  * Cast an #xmlNodePtr with node type #XML_DOCUMENT_NODE to an #xmlDocPtr.
@@ -9763,7 +9763,7 @@ xmlDocToNode (xmlDocPtr doc)
  * Returns: An #xmlDoc pointer or NULL if @node is NULL
  */
 xmlDocPtr
-xmlNodeToDoc (xmlNodePtr node)
+xmlCastNodeToDoc (xmlNodePtr node)
 {
     if (node == NULL)
         return NULL;
@@ -9775,7 +9775,7 @@ xmlNodeToDoc (xmlNodePtr node)
 }
 
 /**
- * xmlAttrToNode:
+ * xmlCastAttrToNode:
  * @attr: an #xmlAttrPtr
  *
  * Cast an #xmlAttrPtr to an #xmlNodePtr. The resulting node will have
@@ -9784,13 +9784,13 @@ xmlNodeToDoc (xmlNodePtr node)
  * Returns: An #xmlNodePtr or NULL if @attr is NULL
  */
 xmlNodePtr
-xmlAttrToNode (xmlAttrPtr attr)
+xmlCastAttrToNode (xmlAttrPtr attr)
 {
     return (xmlAttrPtr)attr;
 }
 
 /**
- * xmlNodeToAttr:
+ * xmlCastNodeToAttr:
  * @node: an #xmlNodePtr
  *
  * Cast an #xmlNodePtr with node type #XML_ATTRIBUTE_NODE to an #xmlAttrPtr.
@@ -9798,7 +9798,7 @@ xmlAttrToNode (xmlAttrPtr attr)
  * Returns: An #xmlDoc pointer or NULL if @node is NULL
  */
 xmlAttrPtr
-xmlNodeToAttr (xmlNodePtr node)
+xmlCastNodeToAttr (xmlNodePtr node)
 {
     if (node == NULL)
         return NULL;
