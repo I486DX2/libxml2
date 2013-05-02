@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     xmlDocPtr doc;
     
     if (argc != 2) {
-        printf("Uusage: %s file.xml\n", argv[0]);
+        printf("usage: %s file.xml\n", argv[0]);
         return 1;
     }
 
