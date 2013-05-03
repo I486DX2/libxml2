@@ -5376,7 +5376,7 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 
 /**
  * xmlNodeAddContentLen:
- * @node: an #xmlNodePtr
+ * @node: the node being modified
  * @content: extra content
  * @len: the size of @content
  *
@@ -5453,7 +5453,7 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 
 /**
  * xmlNodeAddContent:
- * @node: an #xmlNodePtr
+ * @node: the node being modified
  * @content: extra content
  *
  * Append the extra substring to the node content.
@@ -9901,7 +9901,7 @@ xmlCastNodeToAttr (xmlNodePtr node)
 
 /**
  * xmlGetOwnerDoc:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the document that owns a node.
  *
@@ -9921,7 +9921,7 @@ xmlGetOwnerDoc (xmlNodePtr node)
 
 /**
  * xmlGetParentNode:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the parent of a node.
  *
@@ -9939,7 +9939,7 @@ xmlGetParentNode (xmlNodePtr node)
 
 /**
  * xmlGetPreviousSibling:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the previous sibling of a node.
  *
@@ -9957,7 +9957,7 @@ xmlGetPreviousSibling (xmlNodePtr node)
 
 /**
  * xmlGetNextSibling:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the next sibling of a node.
  *
@@ -9975,7 +9975,7 @@ xmlGetNextSibling (xmlNodePtr node)
 
 /**
  * xmlGetFirstChild:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the first child of a node.
  *
@@ -9993,7 +9993,7 @@ xmlGetFirstChild (xmlNodePtr node)
 
 /**
  * xmlGetLastChild:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the last child of a node.
  *
@@ -10127,7 +10127,7 @@ xmlFreeDoc(xmlDocPtr cur) {
 
 /**
  * xmlDocGetRootElement:
- * @doc: an #xmlDocPtr
+ * @doc: a document
  *
  * Get the root element of the document (as document's children can possibly
  * include comments, processing instructions, etc.)
@@ -10160,7 +10160,7 @@ xmlDocGetRootElement(xmlDocPtr doc)
 
 /**
  * xmlGetNodeUserData:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the user data associated with a node. The application is free to 
  * associate any pointer it wishes with an #xmlNode. This can be useful in many 
@@ -10183,7 +10183,7 @@ xmlGetNodeUserData (xmlNodePtr node);
 
 /**
  * xmlSetNodeUserData:
- * @node: an #xmlNodePtr
+ * @node: a node being modified
  * @userData: new user data
  *
  * Sets the user data associated with a node. The application is free to 
@@ -10206,7 +10206,7 @@ xmlSetNodeUserData (xmlNodePtr node, void *userData)
 
 /**
  * xmlGetNodeType:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Gets the type of the node.
  *
@@ -10223,7 +10223,7 @@ xmlGetNodeType (xmlNodePtr node)
 
 /**
  * xmlNodeGetContent:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Read the value of a node, this can be either the text carried
  * directly by this node if it's a TEXT node or the aggregate string
@@ -10331,7 +10331,7 @@ xmlNodeGetContent(xmlNodePtr cur)
 
 /**
  * xmlNodeSetContent:
- * @node: an #xmlNodePtr
+ * @node: a node being modified
  * @content: the new value of the content
  *
  * Replace the content of a node.
@@ -10406,7 +10406,7 @@ xmlNodeSetContent(xmlNodePtr cur, const xmlChar *content) {
 
 /**
  * xmlGetLineNo:
- * @node: an #xmlNodePtr
+ * @node: a node
  *
  * Get line number of @node.
  * 
