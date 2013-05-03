@@ -1129,12 +1129,7 @@ XMLPUBFUN xmlAttrPtr XMLCALL
 XMLPUBFUN xmlChar * XMLCALL
 		xmlGetNoNsProp		(xmlNodePtr node,
 					 const xmlChar *name);
-XMLPUBFUN xmlChar * XMLCALL
-		xmlGetProp		(xmlNodePtr node,
-					 const xmlChar *name);
-XMLPUBFUN xmlAttrPtr XMLCALL
-		xmlHasProp		(xmlNodePtr node,
-					 const xmlChar *name);
+
 XMLPUBFUN xmlAttrPtr XMLCALL
 		xmlHasNsProp		(xmlNodePtr node,
 					 const xmlChar *name,
@@ -1160,20 +1155,6 @@ XMLPUBFUN xmlChar * XMLCALL
 					 xmlNodePtr list,
 					 int inLine);
 #endif /* LIBXML_TREE_ENABLED */
-
-#ifdef LIBXML_TREE_ENABLED
-XMLPUBFUN void XMLCALL
-		xmlNodeSetContentLen	(xmlNodePtr cur,
-					 const xmlChar *content,
-					 int len);
-#endif /* LIBXML_TREE_ENABLED */
-XMLPUBFUN void XMLCALL
-		xmlNodeAddContent	(xmlNodePtr cur,
-					 const xmlChar *content);
-XMLPUBFUN void XMLCALL
-		xmlNodeAddContentLen	(xmlNodePtr cur,
-					 const xmlChar *content,
-					 int len);
 
 XMLPUBFUN int XMLCALL
 		xmlNodeBufGetContent	(xmlBufferPtr buffer,
@@ -1481,6 +1462,10 @@ XMLPUBFUN void * XMLCALL
 XMLPUBFUN xmlElementType XMLCALL
     xmlGetNodeType (xmlNodePtr node);
 
+/* ------------------------------------------------------------------------- */
+/*  Node content                                                             */
+/* ------------------------------------------------------------------------- */
+
 XMLPUBFUN const xmlChar * XMLCALL
     xmlNodeGetDirectContent (xmlNodePtr node);
 
@@ -1488,7 +1473,22 @@ XMLPUBFUN xmlChar * XMLCALL
     xmlNodeGetContent (xmlNodePtr node);
 
 XMLPUBFUN void XMLCALL
-    xmlNodeSetContent (xmlNodePtr cur, const xmlChar *content);
+    xmlNodeSetContent (xmlNodePtr node, const xmlChar *content);
+
+#ifdef LIBXML_TREE_ENABLED
+XMLPUBFUN void XMLCALL
+    xmlNodeSetContentLen (xmlNodePtr node, const xmlChar *content, int len);
+#endif /* LIBXML_TREE_ENABLED */
+
+XMLPUBFUN void XMLCALL
+    xmlNodeAddContent (xmlNodePtr node, const xmlChar *content);
+
+XMLPUBFUN void XMLCALL
+    xmlNodeAddContentLen (xmlNodePtr node, const xmlChar *content, int len);
+
+/* ------------------------------------------------------------------------- */
+/*  Node line number                                                         */
+/* ------------------------------------------------------------------------- */
 
 XMLPUBFUN long XMLCALL
     xmlGetLineNo (xmlNodePtr node);
@@ -1496,6 +1496,12 @@ XMLPUBFUN long XMLCALL
 /* ------------------------------------------------------------------------- */
 /*  Element attributes                                                       */
 /* ------------------------------------------------------------------------- */
+
+XMLPUBFUN xmlChar * XMLCALL
+    xmlGetProp (xmlNodePtr node, const xmlChar *name);
+
+XMLPUBFUN xmlAttrPtr XMLCALL
+    xmlHasProp (xmlNodePtr node, const xmlChar *name);
 
 /* ------------------------------------------------------------------------- */
 /*  Deprecated stuff                                                         */

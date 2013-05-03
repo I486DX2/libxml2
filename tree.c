@@ -5292,14 +5292,21 @@ xmlBufGetNodeContent(xmlBufPtr buf, xmlNodePtr cur)
     return(0);
 }
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 #ifdef LIBXML_TREE_ENABLED
 /**
  * xmlNodeSetContentLen:
- * @cur:  the node being modified
- * @content:  the new value of the content
- * @len:  the size of @content
+ * @node: the node being modified
+ * @content: the new value of the content
+ * @len: the size of @content
  *
  * Replace the content of a node.
+ *
  * NOTE: @content is supposed to be a piece of XML CDATA, so it allows entity
  *       references, but XML special chars need to be escaped first by using
  *       xmlEncodeEntitiesReentrant() resp. xmlEncodeSpecialChars().
@@ -5369,11 +5376,12 @@ xmlNodeSetContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 
 /**
  * xmlNodeAddContentLen:
- * @cur:  the node being modified
- * @content:  extra content
- * @len:  the size of @content
+ * @node: an #xmlNodePtr
+ * @content: extra content
+ * @len: the size of @content
  *
  * Append the extra substring to the node content.
+ *
  * NOTE: In contrast to xmlNodeSetContentLen(), @content is supposed to be
  *       raw text, so unescaped XML special chars are allowed, entity
  *       references are not supported.
@@ -5445,10 +5453,11 @@ xmlNodeAddContentLen(xmlNodePtr cur, const xmlChar *content, int len) {
 
 /**
  * xmlNodeAddContent:
- * @cur:  the node being modified
- * @content:  extra content
+ * @node: an #xmlNodePtr
+ * @content: extra content
  *
  * Append the extra substring to the node content.
+ *
  * NOTE: In contrast to xmlNodeSetContent(), @content is supposed to be
  *       raw text, so unescaped XML special chars are allowed, entity
  *       references are not supported.
@@ -5468,6 +5477,12 @@ xmlNodeAddContent(xmlNodePtr cur, const xmlChar *content) {
     len = xmlStrlen(content);
     xmlNodeAddContentLen(cur, content, len);
 }
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
 
 /**
  * xmlTextMerge:
@@ -6226,17 +6241,25 @@ xmlGetPropNodeValueInternal(xmlAttrPtr prop)
     return(NULL);
 }
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlHasProp:
- * @node:  the node
- * @name:  the attribute name
+ * @node: an #xmlNodePtr
+ * @name: the attribute name
  *
- * Search an attribute associated to a node
+ * Search an attribute associated to a node.
+ *
  * This function also looks in DTD attribute declaration for #FIXED or
  * default declaration values unless DTD use has been turned off.
  *
- * Returns the attribute or the attribute declaration or NULL if
- *         neither was found.
+ * Returns The attribute or the attribute declaration or NULL if
+ *         neither was found or the given #xmlNodePtr is NULL or isn't 
+ *         an #XML_ELEMENT_NODE.
  */
 xmlAttrPtr
 xmlHasProp(xmlNodePtr node, const xmlChar *name) {
@@ -6277,6 +6300,12 @@ xmlHasProp(xmlNodePtr node, const xmlChar *name) {
     return(NULL);
 }
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlHasNsProp:
  * @node:  the node
@@ -6299,21 +6328,30 @@ xmlHasNsProp(xmlNodePtr node, const xmlChar *name, const xmlChar *nameSpace) {
     return(xmlGetPropNodeInternal(node, name, nameSpace, xmlCheckDTD));
 }
 
+/* ========================================================================= */
+/* ========================================================================= */
+/*  SANITY ISLAND                                                            */
+/* ========================================================================= */
+/* ========================================================================= */
+
 /**
  * xmlGetProp:
- * @node:  the node
- * @name:  the attribute name
+ * @node: an #xmlNodePtr 
+ * @name: the attribute name
  *
- * Search and get the value of an attribute associated to a node
+ * Search and get the value of an attribute associated to a node.
+ *
  * This does the entity substitution.
+ *
  * This function looks in DTD attribute declaration for #FIXED or
  * default declaration values unless DTD use has been turned off.
+ *
  * NOTE: this function acts independently of namespaces associated
  *       to the attribute. Use xmlGetNsProp() or xmlGetNoNsProp()
  *       for namespace aware processing.
  *
- * Returns the attribute value or NULL if not found.
- *     It's up to the caller to free the memory with xmlFree().
+ * Returns: The attribute value or NULL if not found or the given #xmlNodePtr
+ *          is NULL. It's up to the caller to free the memory with xmlFree().
  */
 xmlChar *
 xmlGetProp(xmlNodePtr node, const xmlChar *name) {
@@ -6324,6 +6362,12 @@ xmlGetProp(xmlNodePtr node, const xmlChar *name) {
 	return(NULL);
     return(xmlGetPropNodeValueInternal(prop));
 }
+
+/* ========================================================================= */
+/* ========================================================================= */
+/*  END SANITY ISLAND                                                        */
+/* ========================================================================= */
+/* ========================================================================= */
 
 /**
  * xmlGetNoNsProp:
