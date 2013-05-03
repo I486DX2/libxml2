@@ -567,7 +567,7 @@ struct _xmlRef {
  *
  * The members of this structure should not be accessed directly. Use the
  * accessor functions like xmlGetFirstChild(), xmlGetLineNo() and
- * xmlGetPrivate() instead. If you still want to, keep reading.
+ * xmlGetUserData() instead. If you still want to, keep reading.
  *
  * Not all pointers to #xmlNode actually point to an #xmlNode structure.
  * #xmlNode has the same first 9 fields as #xmlDoc, #xmlAttr and several other 
