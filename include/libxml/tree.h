@@ -584,8 +584,8 @@ struct _xmlRef {
  * one field, type, of the common node part, is cast into #xmlNode too.
  *
  * It means that you can't safely access any field of a structure pointed to
- * by an #xmlNodePtr except type unless you check the type field to determine
- * what structure does it point to.
+ * by an #xmlNodePtr except the type field unless you check the type field to 
+ * determine what structure does it point to.
  *
  * There are two functions that can help you with that: xmlHasCommonNodePart()
  * and xmlDoesNodePtrPointToNode(). If xmlHasCommonNodePart() returns 1, it
