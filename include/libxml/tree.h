@@ -418,6 +418,8 @@ typedef xmlElementType xmlNsType;
  * Note that prefix == NULL is valid, it defines the default namespace
  * within the subtree (until overridden).
  *
+ * Element types that this structure represents: #XML_NAMESPACE_DECL.
+ *
  * xmlNsType is unified with xmlElementType.
  *
  * The members of this structure should not be accessed directly. Use the
@@ -426,11 +428,11 @@ typedef xmlElementType xmlNsType;
 typedef struct _xmlNs xmlNs;
 struct _xmlNs {
     struct _xmlNs  *next;       /* next Ns link for this node  */
-    xmlNsType      type;        /* global or local */
+    xmlNsType      type;        /* global or local, TODOFIXME: ??!!! */
     const xmlChar  *href;       /* URL for the namespace */
     const xmlChar  *prefix;     /* prefix for the namespace */
     void           *_private;   /* application data */
-    struct _xmlDoc *context;    /* normally an xmlDoc */
+    struct _xmlDoc *context;    /* normally an xmlDoc, TODOFIXME: ??!!! can point to something else? */
 };
 
 /**
@@ -484,6 +486,8 @@ struct _xmlDtd {
 
 /**
  * xmlAttr:
+ *
+ * Element types that this structure represents: #XML_ATTRIBUTE_NODE.
  *
  * An attribute on an XML node.
  *
@@ -565,6 +569,10 @@ struct _xmlRef {
  *
  * A node in an XML tree.
  *
+ * Element types that this structure represents: #XML_ELEMENT_NODE, 
+ * #XML_TEXT_NODE, #XML_CDATA_SECTION_NODE, #XML_COMMENT_NODE,
+ * #XML_PI_NODE.
+ *
  * The members of this structure should not be accessed directly. Use the
  * accessor functions like xmlGetFirstChild(), xmlGetLineNo() and
  * xmlGetUserData() instead. If you still want to, keep reading.
@@ -576,7 +584,7 @@ struct _xmlRef {
  * one field, type, of the common node part, is cast into #xmlNode too.
  *
  * It means that you can't safely access any field of a structure pointed to
- * by an #xmlNodePtr except type unless you check that type to check what
+ * by an #xmlNodePtr except type unless you check that type to determine what
  * structure it points to.
  *
  * There are two functions that can help you with that: xmlHasCommonNodePart()
@@ -658,6 +666,8 @@ typedef enum {
  * xmlDoc:
  *
  * An XML document.
+ *
+ * Element types that this structure represents: #XML_DOCUMENT_NODE.
  *
  * The members of this structure should not be accessed directly. Use the
  * accessor functions like xmlDocGetRootElement() instead.
