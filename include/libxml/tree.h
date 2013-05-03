@@ -580,8 +580,9 @@ struct _xmlRef {
  * Not all pointers to #xmlNode actually point to an #xmlNode structure.
  * #xmlNode has the same first 9 fields as #xmlDoc, #xmlAttr and several other 
  * structures pointers to which which are often cast into #xmlNodePtr. These 9
- * common fields are called the common node part. Also, #xmlNs, which has only
- * one field, type, of the common node part, is cast into #xmlNode too.
+ * common fields are called the common node part. Also, pointers to#xmlNs, 
+ * which has only one field, type, of the common node part, are cast into 
+ * #xmlNodePtr too.
  *
  * It means that you can't safely access any field of a structure pointed to
  * by an #xmlNodePtr except the type field unless you check the type field to 
