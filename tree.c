@@ -9735,6 +9735,48 @@ xmlDOMWrapAdoptNode(xmlDOMWrapCtxtPtr ctxt,
 /* ========================================================================= */
 /* ========================================================================= */
 
+/**
+ * xmlHasCommonNodePart:
+ * @node: an #xmlNodePtr
+ *
+ * Checks is the structure that the #xmlNodePtr points to has the common node
+ * part. See #xmlNode for more information.
+ *
+ * Returns: 1 if the structure that the given #xmlNodePtr points to has the
+ *          common node part, or 0 if it doesn't or the given #xmlNodePtr is
+ *          NULL
+ */
+int
+xmlHasCommonNodePart (xmlNodePtr node)
+{
+    if (node == NULL)
+        return 0;
+
+    return node->type != XML_NAMESPACE_DECL;
+}
+
+/**
+ * xmlDoesNodePtrPointToNode:
+ * @node: an #xmlNodePtr
+ *
+ * Checks if an #xmlNodePtr really points to an #xmlNode structure.
+ *
+ * Returns: 1 if the given #xmlNodePtr points to an #xmlNode, 0 if it doesn't 
+ *          (NULL or points to eg. an #xmlDoc).
+ */
+int
+xmlDoesNodePtrPointToNode (xmlNodePtr node)
+{
+    if (node == NULL)
+        return 0;
+
+    return node->type == XML_ELEMENT_NODE 
+           || node->type == XML_TEXT_NODE
+           || node->type == XML_CDATA_SECTION_NODE
+           || node->type == XML_PI_NODE
+           || node->type == XML_COMMENT_NODE;
+}
+
 /* ------------------------------------------------------------------------- */
 /*  Casting                                                                  */
 /* ------------------------------------------------------------------------- */
@@ -10077,7 +10119,7 @@ xmlDocGetRootElement(xmlDocPtr doc)
  * @node: an #xmlNodePtr
  *
  * Gets the user data associated with a node. The application is free to 
- * associate any it wishes with an #xmlNode. This can be useful in many 
+ * associate any pointer it wishes with an #xmlNode. This can be useful in many 
  * situations.
  *
  * Returns: User data associated with the node or NULL if @node is NULL or 

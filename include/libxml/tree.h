@@ -155,10 +155,10 @@ XMLPUBFUN size_t XMLCALL         xmlBufShrink	(xmlBufPtr buf, size_t len);
 /*
  * xmlElementType:
  * @XML_ELEMENT_NODE: an element (commonly called a tag, eg. <hello></hello>)
- * @XML_ATTRIBUTE_NODE: an attribute of an element (eg. <a href="http://url">)
+ * @XML_ATTRIBUTE_NODE: an attribute of an element (eg. <hello attribute="value"></hello>)
  * @XML_TEXT_NODE: a text node (for example, <p>this is a paragraph</p>
- *                 will result in an #XML_ELEMENT_NODE with the tag "p" and
- *                 an #XML_TEXT_NODE with content "this is a paragraph")
+ *                 will result in an #XML_ELEMENT_NODE with the tag name "p" 
+ *                 and an #XML_TEXT_NODE with content "this is a paragraph")
  * @XML_CDATA_SECTION_NODE: a CDATA section node (eg. <![CDATA[ the cdata ]]>)
  * @XML_ENTITY_REF_NODE: an entity reference (eg. &amp;)
  * @XML_ENTITY_NODE: an entity
@@ -500,7 +500,8 @@ struct _xmlAttr {
     struct _xmlNode *parent;    /* child->parent link */
     struct _xmlAttr *next;      /* next sibling link  */
     struct _xmlAttr *prev;      /* previous sibling link  */
-    struct _xmlDoc  *doc;       /* the containing document */
+    struct _xmlDoc  *doc;       /* the containing document, end of common node part */
+
     xmlNs           *ns;        /* pointer to the associated namespace */
     xmlAttributeType atype;     /* the attribute type if validating */
     void            *psvi;      /* for type/PSVI informations */
@@ -566,20 +567,28 @@ struct _xmlRef {
  *
  * The members of this structure should not be accessed directly. Use the
  * accessor functions like xmlGetFirstChild(), xmlGetLineNo() and
- * xmlGetPrivate() instead.
+ * xmlGetPrivate() instead. If you still want to, keep reading.
  *
  * Not all pointers to #xmlNode actually point to an #xmlNode structure.
  * #xmlNode has the same first 9 fields as #xmlDoc, #xmlAttr and several other 
- * structures pointers to which which are often cast into #xmlNodePtr. #xmlNs,
- * which has only one common field with it, is also cast into #xmlNodePtr.
+ * structures pointers to which which are often cast into #xmlNodePtr. These 9
+ * common fields are called the common node part. Also, #xmlNs, which has only
+ * one field, type, of the common node part, is cast into #xmlNode too.
  *
- * It means that you can't access the fields of an #xmlNode after the common 
- * part without checking if the #xmlNodePtr actually points to an #xmlNode. 
- * This is not a problem if you use the accessor functions instead of accessing 
- * these fields, as the functions do this for you. You can also check it
- * yourself with the xmlNodePtrPointsToNode() function (although you won't
- * normally need that, since accessor functions are preferred to the direct
- * field access).
+ * It means that you can't safely access any field of a structure pointed to
+ * by an #xmlNodePtr except type unless you check that type to check what
+ * structure it points to.
+ *
+ * There are two functions that can help you with that: xmlHasCommonNodePart()
+ * and xmlDoesNodePtrPointToNode(). If xmlHasCommonNodePart() returns 1, it
+ * means that the #xmlNodePtr you gave it points to a structure that has the
+ * common node part, for example #xmlNode or #xmlDoc. If 
+ * xmlDoesNodePointToNode() returns 1, then the given #xmlNodePtr points to the
+ * #xmlNode structure and all its fields can safely be directly accessed.
+ *
+ * Note that you can safely access all the members of #xmlDoc, #xmlAttr, etc.
+ * by #xmlDocPtr, #xmlAttrPtr, as the library never casts something else to
+ * these pointer types.
  *
  * See #xmlDocPtr and #xmlAttrPtr 
  * to learn how to safely cast them to an #xmlNodePtr and back.
@@ -594,7 +603,7 @@ struct _xmlNode {
     struct _xmlNode *parent;    /* child->parent link */
     struct _xmlNode *next;      /* next sibling link  */
     struct _xmlNode *prev;      /* previous sibling link  */
-    struct _xmlDoc  *doc;       /* the containing document, end of common part */
+    struct _xmlDoc  *doc;       /* the containing document, end of common node part */
 
     xmlNs           *ns;        /* pointer to the associated namespace */
     xmlChar         *content;   /* the content */
@@ -663,7 +672,7 @@ struct _xmlDoc {
     struct _xmlNode *parent;    /* child->parent link */
     struct _xmlNode *next;      /* next sibling link  */
     struct _xmlNode *prev;      /* previous sibling link  */
-    struct _xmlDoc  *doc;       /* autoreference to itself, end of common part */
+    struct _xmlDoc  *doc;       /* autoreference to itself, end of common node part */
 
     int             compression;/* level of zlib compression */
     int             standalone; /* standalone document (no external refs)
@@ -1387,6 +1396,16 @@ XMLPUBFUN xmlNodePtr XMLCALL
 /*  SANITY ISLAND                                                            */
 /* ========================================================================= */
 /* ========================================================================= */
+
+/* ------------------------------------------------------------------------- */
+/*  Checking                                                                 */
+/* ------------------------------------------------------------------------- */
+
+XMLPUBFUN int XMLCALL
+    xmlHasNodeCommonPart (xmlNodePtr node);
+
+XMLPUBFUN int XMLCALL
+    xmlDoesNodePtrPointToNode (xmlNodePtr node);
 
 /* ------------------------------------------------------------------------- */
 /*  Casting                                                                  */
